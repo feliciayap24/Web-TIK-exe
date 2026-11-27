@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belajar Dulu, Maju Kemudian — Web Kolaborasi IPS-PPKn-TIK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="WebSDGs.css">
+  <style>
+    /* ================= DDLC TITLE / START SCREEN ================= */
+    body.start-locked {
+      overflow: hidden;
+    }
+
+    .ddlc-start-screen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 99990;
+      background-color: #ffffff;
+      background-image: radial-gradient(#ffd9ea 22%, transparent 23%),
+                        radial-gradient(#ffd9ea 22%, transparent 23%);
+      background-size: 96px 96px;
+      background-position: 0 0, 48px 48px;
+      overflow: hidden;
+      transition: opacity 0.65s ease, visibility 0.65s ease;
+    }
+
+    .ddlc-start-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* Left Pink Sidebar with Curved Pink Border */
+    .ddlc-start-sidebar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: min(320px, 38vw);
+      height: 100%;
+      background: #ffe6f2;
+      border-right: 7px solid #ff9ec7;
+      border-top-right-radius: 135px 52%;
+      border-bottom-right-radius: 75px 42%;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 22px 24px 48px 30px;
+      box-sizing: border-box;
+    }
+
+    /* Top-Left Logo Emblem (no dark outline, clean fit) */
+    .ddlc-start-emblem {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-left: 4px;
+      overflow: visible;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+
+    .ddlc-title-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: scale(1);
+      display: block;
+      border: none;
+      outline: none;
+      box-shadow: none;
+    }
+
+    /* Menu Options on Left Sidebar */
+    .ddlc-start-menu {
+      list-style: none;
+      margin: 0 0 24px 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ddlc-menu-option {
+      background: none;
+      border: none;
+      padding: 2px 4px;
+      text-align: left;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.35rem, 2.3vw, 1.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      letter-spacing: 0.4px;
+      -webkit-text-stroke: 2px #b84d8a;
+      paint-order: stroke fill;
+      text-shadow: 0 3px 0 rgba(184, 77, 138, 0.25);
+      transition: transform 0.16s ease, color 0.16s ease;
+    }
+
+    .ddlc-menu-option:hover,
+    .ddlc-menu-option:focus-visible {
+      color: #ffe3f1;
+      transform: translateX(8px);
+      outline: none;
+    }
+
+    /* Slightly Spaced & Centered Layered Cast */
+    .ddlc-start-cast {
+      position: absolute;
+      inset: 0;
+      left: min(295px, 35vw);
+      right: 1vw;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .start-char {
+      position: absolute;
+      width: auto;
+      object-fit: contain;
+      opacity: 0;
+      transform: translateY(-38px);
+      transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.75s ease;
+      filter: drop-shadow(0 8px 16px rgba(140, 45, 95, 0.18));
+    }
+
+    .ddlc-start-screen.entered .start-char {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .ddlc-start-screen.starting .start-char {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: transform 0.55s ease-in, opacity 0.5s ease-in;
+    }
+
+    .start-char-yuri {
+      left: 20%;
+      bottom: -10%;
+      height: 108vh;
+      z-index: 1;
+      transition-delay: 0.08s;
+    }
+
+    .start-char-natsuki {
+      left: 36%;
+      bottom: -16%;
+      height: 100vh;
+      z-index: 2;
+      transition-delay: 0.18s;
+    }
+
+    .start-char-sayori {
+      left: 9%;
+      bottom: -24%;
+      height: 100vh;
+      z-index: 3;
+      transition-delay: 0.28s;
+    }
+
+    .start-char-monika {
+      left: 48%;
+      bottom: -38%;
+      height: 122vh;
+      z-index: 4;
+      transition-delay: 0.38s;
+    }
+
+    /* Popup inside Start Screen */
+    .ddlc-start-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 230, 242, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99995;
+    }
+
+    .ddlc-start-modal.open {
+      display: flex;
+    }
+
+    .ddlc-start-modal-box {
+      width: min(400px, calc(100vw - 32px));
+      background: #f9e6ef;
+      border: 4px solid #f2b6d2;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+      padding: 24px 22px 20px;
+      text-align: center;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .ddlc-start-modal-box p {
+      color: #1b1b1b;
+      font-size: 1.02rem;
+      font-weight: 600;
+      margin: 0 0 18px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 820px) {
+      .ddlc-start-sidebar {
+        width: 210px;
+        padding: 18px 14px 32px 18px;
+      }
+
+      .ddlc-start-emblem {
+        width: 144px;
+        height: 144px;
+      }
+
+      .ddlc-start-cast {
+        left: 185px;
+        right: 0;
+      }
+
+      .start-char-yuri { left: 16%; bottom: -8%; height: 82vh; }
+      .start-char-natsuki { left: 33%; bottom: -12%; height: 76vh; }
+      .start-char-sayori { left: 4%; bottom: -20%; height: 76vh; }
+      .start-char-monika { left: 44%; bottom: -30%; height: 96vh; }
+    }
+
+    /* ================= SCROLL & LAYOUT BUG FIXES ================= */
+    html, body {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    .navbar {
+      z-index: 500;
+    }
+
+    .container,
+    main.container {
+      position: relative;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    .tab-panel {
+      position: relative;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    .ddlc-card {
+      position: relative;
+      z-index: 2;
+      overflow: visible;
+      scroll-margin-top: 84px;
+      margin-bottom: 24px;
+    }
+
+    .ddlc-card p,
+    .ddlc-card h3 {
+      position: relative;
+      z-index: 2;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    .ddlc-footer {
+      position: relative;
+      z-index: 5;
+      clear: both;
+    }
+
+    /* ================= EXISTING PAGE STYLES ================= */
+    .ddlc-click-img {
+      cursor: pointer;
+    }
+
+    .ddlc-banner .banner-tag {
+      display: none;
+    }
+
+    .ddlc-banner .banner-content {
+      max-width: 680px;
+      text-align: center;
+    }
+
+    .ddlc-banner .banner-title {
+      line-height: 1.15;
+      white-space: normal;
+      word-break: normal;
+      overflow-wrap: normal;
+    }
+
+    .ddlc-title-line {
+      display: block;
+    }
+
+    .ddlc-banner .banner-subtitle {
+      color: #111111;
+      font-weight: 600;
+    }
+
+    /* Grid 17 SDGs di Beranda */
+    .sdgs-17-section {
+      margin-top: 24px;
+    }
+
+    .sdgs-17-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .sdg-box {
+      position: relative;
+      background: #fff9fc;
+      border: 2px solid #f2b6d2;
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sdg-box-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-width: 190px;
+      align-self: center;
+      object-fit: contain;
+      border-radius: 0;
+      background: #ffffff;
+      padding: 4px;
+      border: 1px solid #f2b6d2;
+    }
+
+    .sdg-box-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      color: #7a1c4b;
+      line-height: 1.25;
+    }
+
+    .sdg-box-desc {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: #222222;
+      margin: 0;
+    }
+
+    .sdg-deco-slot {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      min-height: 260px;
+      padding: 8px;
+    }
+
+    .sdg-deco-slot img {
+      height: 270px;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card-with-natsuki {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .card-with-natsuki .card-text-area {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-natsuki-side {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 2px;
+    }
+
+    .card-natsuki-side img {
+      height: 245px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    @media (max-width: 720px) {
+      .card-with-natsuki {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .card-natsuki-side img {
+        height: 200px;
+        margin: 0 auto;
+      }
+    }
+
+    .content-inline-img {
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin: 12px 0;
+      display: block;
+    }
+
+    .pustaka-bottom-banner {
+      margin-top: 22px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .pustaka-bottom-banner img {
+      width: 100%;
+      max-width: 960px;
+      height: auto;
+      border-radius: 14px;
+      border: 3px solid #f2b6d2;
+      background: #fff9fc;
+      display: block;
+    }
+
+    .pustaka-list {
+      word-break: break-word;
+      padding-left: 20px;
+    }
+
+    .pustaka-list li {
+      margin-bottom: 8px;
+    }
+
+    /* Fullscreen Glitch & Just Monika */
+    .monika-fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #14040c;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      overflow: hidden;
+    }
+
+    .monika-fullscreen-overlay.active {
+      display: flex;
+    }
+
+    .monika-glitch-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      pointer-events: none;
+      filter: contrast(1.08) saturate(1.15);
+    }
+
+    .monika-layers-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .monika-layer-box {
+      position: fixed;
+      width: min(330px, calc(100vw - 32px));
+      background: #f9e6ef;
+      border: 4px solid #f2b6d2;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.42);
+      padding: 24px 20px 20px;
+      text-align: center;
+      user-select: none;
+      pointer-events: auto;
+    }
+
+    .monika-layer-box.ok-only-box {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px 24px;
+    }
+
+    .monika-layer-title {
+      font-family: 'Quicksand', 'Segoe UI', sans-serif;
+      font-size: clamp(1.15rem, 2.5vw, 1.48rem);
+      font-weight: 500;
+      color: #1b1b1b;
+      letter-spacing: 0.2px;
+      margin-bottom: 18px;
+      line-height: 1.2;
+      -webkit-text-stroke: 0;
+      text-shadow: none;
+    }
+
+    .monika-layer-ok {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 96px;
+      padding: 4px 18px;
+      background: #f9e6ef;
+      border: 2px solid #f9e6ef;
+      border-radius: 999px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #b8559a;
+      -webkit-text-stroke: 0;
+      text-shadow: none;
+      cursor: pointer;
+      line-height: 1.1;
+    }
+
+    .monika-layer-ok:hover {
+      background: #f9e6ef;
+      color: #9b3e80;
+    }
+
+    /* DDLC Choice Bars ("Yes." / "No.") */
+    .yuri-choice-stack {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(540px, calc(100vw - 36px));
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 30;
+      pointer-events: auto;
+    }
+
+    .yuri-choice-btn {
+      width: 100%;
+      padding: 12px 24px;
+      background: rgba(255, 226, 240, 0.92);
+      border: 3px solid #f7a8ce;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), inset 0 0 0 2px #ffffff;
+      font-family: 'Quicksand', 'Segoe UI', sans-serif;
+      font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+      font-weight: 600;
+      color: #1e1e1e;
+      text-align: center;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
+    }
+
+    .yuri-choice-btn:hover,
+    .yuri-choice-btn:focus-visible {
+      background: #ffd3ea;
+      border-color: #e67ab2;
+      transform: scale(1.02);
+      outline: none;
+    }
+  </style>
+</head>
+<body class="start-locked">
+
+  <!-- ================= DDLC LOADING / START SCREEN ================= -->
+  <div id="ddlcStartScreen" class="ddlc-start-screen" role="dialog" aria-modal="true" aria-label="Start Menu">
+    <aside class="ddlc-start-sidebar">
+      <div class="ddlc-start-emblem">
+        <img
+          src="images/titledoki.png"
+          alt="Title Doki"
+          class="ddlc-title-photo"
+          data-fallbacks="titledoki.png"
+          onerror="const list = (this.dataset.fallbacks || '').split(',').filter(Boolean); if (list.length) { this.src = list.shift(); this.dataset.fallbacks = list.join(','); } else { this.style.display='none'; }"
+        >
+      </div>
+
+      <ul class="ddlc-start-menu">
+        <li><button type="button" class="ddlc-menu-option" id="btnNewGame">New Game</button></li>
+        <li><button type="button" class="ddlc-menu-option" id="btnLoadGame">Load Game</button></li>
+        <li><button type="button" class="ddlc-menu-option" id="btnSettingsStart">Settings</button></li>
+        <li><button type="button" class="ddlc-menu-option" id="btnHelpStart">Help</button></li>
+        <li><button type="button" class="ddlc-menu-option" id="btnQuitStart">Quit</button></li>
+      </ul>
+    </aside>
+
+    <div class="ddlc-start-cast">
+      <img src="images/Yuri_-_Full_Body_Illustration.webp" alt="Yuri" class="start-char start-char-yuri" onerror="this.style.display='none';">
+      <img src="images/Natsuki_-_Full_Body_Illustration.webp" alt="Natsuki" class="start-char start-char-natsuki" onerror="this.style.display='none';">
+      <img src="images/Sayori_-_Full_Body_Illustration.webp" alt="Sayori" class="start-char start-char-sayori" onerror="this.style.display='none';">
+      <img src="images/Monika_-_Full_Body_Illustration.webp" alt="Monika" class="start-char start-char-monika" onerror="this.style.display='none';">
+    </div>
+  </div>
+
+  <!-- Popup di Start Screen -->
+  <div id="ddlcStartModal" class="ddlc-start-modal">
+    <div class="ddlc-start-modal-box">
+      <p id="ddlcStartModalText">Klik "New Game" untuk masuk ke website proyek SDGs 4!</p>
+      <button type="button" class="monika-layer-ok" id="btnCloseStartModal">OK</button>
+    </div>
+  </div>
+
+  <!-- BANNER HEADER -->
+  <header class="ddlc-banner">
+    <div class="banner-sprites banner-sprites-left">
+      <div class="sprite-box">
+        <img
+          src="images/Sayori_-_Full_Body_Illustration.webp"
+          alt="Sayori"
+          class="sprite-char sprite-sayori ddlc-click-img"
+          data-glitch="images/sayorisprite.gif"
+          data-sound="sayonara"
+          onerror="this.style.display='none';"
+        >
+      </div>
+
+      <div class="sprite-box">
+        <img
+          src="images/Yuri_-_Full_Body_Illustration.webp"
+          alt="Yuri"
+          class="sprite-char sprite-yuri ddlc-click-img"
+          data-char="yuri"
+          data-glitch="images/yurisprite.gif"
+          data-sound="playwithme"
+          onerror="this.style.display='none';"
+        >
+      </div>
+    </div>
+
+    <div class="banner-content">
+      <h1 class="banner-title" id="ddlc-logo-title">Belajar Dulu, Maju Kemudian</h1>
+      <p class="banner-subtitle">IL Kolaborasi: IPS • PPKn • TIK</p>
+    </div>
+
+    <div class="banner-sprites banner-sprites-right">
+      <div class="sprite-box">
+        <img
+          src="images/Monika_-_Full_Body_Illustration.webp"
+          alt="Monika"
+          class="sprite-char sprite-monika ddlc-click-img"
+          data-glitch="images/monikasprite.gif"
+          data-sound="monikaglitch1"
+          onerror="this.style.display='none';"
+        >
+      </div>
+
+      <div class="sprite-box">
+        <img
+          src="images/Natsuki_-_Full_Body_Illustration.webp"
+          alt="Natsuki"
+          class="sprite-char sprite-natsuki ddlc-click-img"
+          data-glitch="images/natsukisprite.gif"
+          data-sound="poempanic"
+          onerror="this.style.display='none';"
+        >
+      </div>
+    </div>
+  </header>
+
+  <!-- STICKY NAVIGATION BAR -->
+  <nav class="navbar">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <button type="button" class="ddlc-btn active-tab" data-tab="tab-beranda">Beranda</button>
+      </li>
+
+      <li class="nav-item">
+        <button type="button" class="ddlc-btn" data-tab="tab-analisis">Analisis ▾</button>
+        <ul class="dropdown-menu">
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-sdgs-pilihan">SDGs Pilihan Saya</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-target-sdgs">Target Tujuan SDGs 4</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-kondisi">Kondisi Sekarang</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-tantangan">Tantangan Pendidikan Ke Depan</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-resolusi">Resolusi Ke Depan</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-generasi-emas">Generasi Emas</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-tantangan-akses">Tantangan</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-potensi">Potensi</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-peran">Peran Masyarakat &amp; Indonesia</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-analisis" data-target="sub-pancasila-sdgs">Pancasila &amp; SDGs 4</button></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <button type="button" class="ddlc-btn" data-tab="tab-solusi">Solusi</button>
+      </li>
+
+      <li class="nav-item">
+        <button type="button" class="ddlc-btn" data-tab="tab-kerjasama">Kerjasama ▾</button>
+        <ul class="dropdown-menu">
+          <li><button type="button" class="dropdown-link" data-tab="tab-kerjasama" data-target="sub-bilateral">Bilateral</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-kerjasama" data-target="sub-regional">Regional</button></li>
+          <li><button type="button" class="dropdown-link" data-target="tab-kerjasama" data-target="sub-multilateral">Multilateral</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-kerjasama" data-target="sub-internasional">Internasional</button></li>
+          <li><button type="button" class="dropdown-link" data-tab="tab-kerjasama" data-target="sub-pancasila-kerjasama">Pancasila dalam Kerja Sama</button></li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <button type="button" class="ddlc-btn" data-tab="tab-tentang">Tentang Saya</button>
+      </li>
+
+      <li class="nav-item">
+        <button type="button" class="ddlc-btn" data-tab="tab-pustaka">Daftar Pustaka</button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+
+    <!-- ================= 1. TAB BERANDA ================= -->
+    <section id="tab-beranda" class="tab-panel active">
+      <div class="ddlc-card">
+        <div class="card-header-tab">Apa itu SDGs?</div>
+        <img src="images/sdgs-1.png" alt="SDGs" class="content-inline-img" onerror="this.style.display='none';">
+        <p>
+          Sustainable Development Goals (SDGs) or Tujuan Pembangunan Berkelanjutan is a global UN agenda agreed upon by 193 countries, including Indonesia, in 2015, consisting of 17 goals and 169 targets toward 2030 across economic, social, and environmental dimensions.
+        </p>
+      </div>
+
+      <div class="ddlc-card sdgs-17-section">
+        <div class="card-header-tab">17 Tujuan Sustainable Development Goals (SDGs)</div>
+        <div class="sdgs-17-grid">
+          <div class="sdg-box">
+            <img src="images/sdgs1.png" alt="1. Tanpa Kemiskinan" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">1. Tanpa Kemiskinan (No Poverty)</div>
+            <p class="sdg-box-desc">Ending poverty in all its forms everywhere through social protection, basic services, and economic empowerment.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs2.png" alt="2. Tanpa Kelaparan" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">2. Tanpa Kelaparan (Zero Hunger)</div>
+            <p class="sdg-box-desc">Promoting food security, improved nutrition, and sustainable agriculture so everyone has access to nutritious food.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs3.png" alt="3. Kehidupan Sehat dan Sejahtera" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">3. Kehidupan Sehat dan Sejahtera (Good Health and Well-being)</div>
+            <p class="sdg-box-desc">Ensuring healthy lives and promoting well-being at all ages, including maternal/child health, disease prevention, and mental health.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs4.png" alt="4. Pendidikan Berkualitas" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">4. Pendidikan Berkualitas (Quality Education)</div>
+            <p class="sdg-box-desc">Ensuring inclusive and equitable quality education and lifelong learning opportunities for all, including literacy, numeracy, and vocational skills.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs5.png" alt="5. Kesetaraan Gender" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">5. Kesetaraan Gender (Gender Equality)</div>
+            <p class="sdg-box-desc">Achieving gender equality and empowering all women and girls by ending discrimination, violence, and unequal opportunities.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs6.png" alt="6. Air Bersih dan Sanitasi Layak" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">6. Air Bersih dan Sanitasi Layak (Clean Water and Sanitation)</div>
+            <p class="sdg-box-desc">Ensuring sustainable water management, safe drinking water, and hygienic sanitation facilities for everyone.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs7.png" alt="7. Energi Bersih dan Terjangkau" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">7. Energi Bersih dan Terjangkau (Affordable and Clean Energy)</div>
+            <p class="sdg-box-desc">Expanding access to reliable, sustainable, and modern energy while increasing renewable energy sources.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs8.png" alt="8. Pekerjaan Layak dan Pertumbuhan Ekonomi" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">8. Pekerjaan Layak dan Pertumbuhan Ekonomi (Decent Work and Economic Growth)</div>
+            <p class="sdg-box-desc">Promoting sustained, inclusive economic growth, productive employment, safe working conditions, and ending child/forced labor.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs9.png" alt="9. Industri, Inovasi, dan Infrastruktur" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">9. Industri, Inovasi, dan Infrastruktur (Industry, Innovation and Infrastructure)</div>
+            <p class="sdg-box-desc">Building resilient infrastructure, promoting inclusive and sustainable industrialization, and supporting innovation and ICT access.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs10.png" alt="10. Berkurangnya Kesenjangan" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">10. Berkurangnya Kesenjangan (Reduced Inequalities)</div>
+            <p class="sdg-box-desc">Reducing income and social inequalities within and among countries through inclusive policies and protection for vulnerable groups.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs11.png" alt="11. Kota dan Pemukiman yang Berkelanjutan" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">11. Kota dan Pemukiman yang Berkelanjutan (Sustainable Cities and Communities)</div>
+            <p class="sdg-box-desc">Making cities and human settlements inclusive, safe, resilient, and sustainable with decent housing, transit, and waste management.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs12.png" alt="12. Konsumsi dan Produksi yang Bertanggung Jawab" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">12. Konsumsi dan Produksi yang Bertanggung Jawab (Responsible Consumption and Production)</div>
+            <p class="sdg-box-desc">Encouraging sustainable consumption and production patterns, reducing waste, saving energy, and using eco-friendly materials.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs13.png" alt="13. Penanganan Perubahan Iklim" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">13. Penanganan Perubahan Iklim (Climate Action)</div>
+            <p class="sdg-box-desc">Taking urgent action to combat climate change and its impacts through mitigation, adaptation, emission reduction, and resilience.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs14.png" alt="14. Ekosistem Laut" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">14. Ekosistem Laut (Life Below Water)</div>
+            <p class="sdg-box-desc">Conserving and sustainably using oceans, seas, and marine resources while reducing marine pollution and protecting coral reefs and mangroves.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs15.png" alt="15. Ekosistem Darat" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">15. Ekosistem Darat (Life on Land)</div>
+            <p class="sdg-box-desc">Protecting, restoring, and promoting sustainable use of terrestrial ecosystems, halting deforestation, and protecting biodiversity.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs16.png" alt="16. Perdamaian, Keadilan, dan Kelembagaan yang Tangguh" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">16. Perdamaian, Keadilan, dan Kelembagaan yang Tangguh (Peace, Justice and Strong Institutions)</div>
+            <p class="sdg-box-desc">Promoting peaceful and inclusive societies, access to justice, anti-corruption efforts, human rights, and accountable institutions.</p>
+          </div>
+
+          <div class="sdg-box">
+            <img src="images/sdgs17.png" alt="17. Kemitraan untuk Mencapai Tujuan" class="sdg-box-thumb" onerror="this.style.display='none';">
+            <div class="sdg-box-title">17. Kemitraan untuk Mencapai Tujuan (Partnerships for the Goals)</div>
+            <p class="sdg-box-desc">Strengthening global partnerships across governments, civil society, academia, and the private sector for finance, technology, and policy.</p>
+          </div>
+
+          <div class="sdg-deco-slot">
+            <img src="images/natuskideco1.png" alt="Natsuki Beranda" onerror="this.style.display='none';">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. TAB ANALISIS ================= -->
+    <section id="tab-analisis" class="tab-panel">
+      <div id="sub-sdgs-pilihan" class="ddlc-card">
+        <div class="card-header-tab">SDGs Pilihan Saya</div>
+        <h3>Tujuan SDGs 4, Pendidikan Berkualitas</h3>
+        <img src="images/sdgs-2.png" alt="SDGs 4 Pendidikan Berkualitas" class="content-inline-img" onerror="this.style.display='none';">
+        <p>
+          SDG 4 focuses on ensuring inclusive and equitable quality education and promoting lifelong learning opportunities for all by 2030, covering early childhood, primary, secondary, technical/vocational, and higher education alongside teacher quality, safe facilities, and gender/inclusion equity.
+        </p>
+      </div>
+
+      <div id="sub-target-sdgs" class="ddlc-card">
+        <div class="card-header-tab">Target Tujuan SDGs 4</div>
+        <p><strong>4.1</strong> Free, equitable, and quality primary and secondary education for all girls and boys by 2030.</p>
+        <p><strong>4.2</strong> Quality early childhood development, care, and pre-primary education for all children by 2030.</p>
+        <p><strong>4.3</strong> Equal and affordable access to technical, vocational, and higher education, including university, by 2030.</p>
+        <p><strong>4.4</strong> Increase the number of youth and adults with relevant technical, vocational, and entrepreneurial skills by 2030.</p>
+        <p><strong>4.5</strong> Eliminate gender disparities and ensure equal access for vulnerable groups, including persons with disabilities and indigenous peoples.</p>
+        <p><strong>4.6</strong> Ensure youth and a substantial proportion of adults achieve literacy and numeracy skills by 2030.</p>
+        <p><strong>4.7</strong> Equip learners with knowledge and skills for sustainable development, human rights, gender equality, peace, and global citizenship.</p>
+        <p><strong>4.a</strong> Build and upgrade child-, disability-, and gender-sensitive education facilities providing safe and inclusive learning environments.</p>
+        <p><strong>4.b</strong> Expand global scholarships for developing countries to access higher education and technical/ICT/scientific programs.</p>
+        <p><strong>4.c</strong> Increase the supply of qualified teachers, including through international cooperation in teacher training in developing countries.</p>
+      </div>
+
+      <div id="sub-kondisi" class="ddlc-card">
+        <div class="card-header-tab">Kondisi Sekarang</div>
+        <img src="images/sdgs-3.png" alt="Kondisi Sekarang" class="content-inline-img" onerror="this.style.display='none';">
+        <p>
+          While learning resources are widely accessible, study habits often face digital distractions, varying comprehension speeds, and exam-focused study rather than deep understanding. National education indicators—such as mean years of schooling, expected years of schooling, academic assessments, and higher education participation—highlight the need for evidence-based improvements and focused study routines.
+        </p>
+      </div>
+
+      <div id="sub-tantangan" class="ddlc-card">
+        <div class="card-header-tab">Tantangan Pendidikan Ke Depan</div>
+        <img src="images/sdgs-4.png" alt="Tantangan Pendidikan Ke Depan" class="content-inline-img" onerror="this.style.display='none';">
+        <p>
+          Key long-term challenges include closing gaps in average and expected years of schooling, raising higher education participation rates, improving learning outcomes across core subjects, and strengthening education quality to support Indonesia's 2045 vision.
+        </p>
+      </div>
+
+      <div id="sub-resolusi" class="ddlc-card">
+        <div class="card-header-tab">Resolusi Ke Depan</div>
+        <p>
+          Moving forward requires policy consistency aligned with long-term national development roadmaps, inclusive participation from educators, families, and communities, evidence-based policymaking, and coherent legal frameworks to drive sustainable quality improvements.
+        </p>
+      </div>
+
+      <div id="sub-generasi-emas" class="ddlc-card">
+        <div class="card-header-tab">Pendidikan berkualitas merupakan cara agar menciptakan generasi emas</div>
+        <img src="images/sdgs-5.png" alt="Generasi Emas" class="content-inline-img" onerror="this.style.display='none';">
+        <p>
+          Quality education shapes critical thinking, character, and adaptability needed for Golden Indonesia 2045. Qualified, well-supported teachers—paired with adequate school facilities and equitable distribution across regions—are central to nurturing capable future generations.
+        </p>
+      </div>
+
+      <div id="sub-tantangan-akses" class="ddlc-card">
+        <div class="card-header-tab">Tantangan</div>
+        <p>
+          Access disparities remain noticeable between urban and rural or remote areas due to travel distance, economic constraints, uneven school and teacher resources, and local social norms that can limit educational opportunities for girls.
+        </p>
+      </div>
+
+      <div id="sub-potensi" class="ddlc-card">
+        <div class="card-header-tab">Potensi</div>
+        <img src="images/sdgs-6.png" alt="Potensi SDG 4" class="content-inline-img" onerror="this.style.display='none';">
+        <p>
+          Achieving SDG 4 strengthens literacy and numeracy, expands fair economic opportunities, encourages youth creativity and innovation, and fosters social tolerance through collaboration among families, schools, communities, and government.
+        </p>
+      </div>
+
+      <div id="sub-peran" class="ddlc-card card-with-natsuki">
+        <div class="card-text-area">
+          <div class="card-header-tab">Peran Masyarakat</div>
+          <p>
+            Communities act as partners, supporters, and oversight contributors in planning, implementing, and evaluating education programs alongside schools and government.
+          </p>
+
+          <div class="card-header-tab" style="margin-top: 18px;">Peran Indonesia</div>
+          <p>
+            Indonesia's role focuses on broadening equitable access, improving teacher quality and school infrastructure, strengthening character and future skills toward 2045, and advancing SDG 4 commitments.
+          </p>
+        </div>
+
+        <div class="card-natsuki-side">
+          <img src="images/natuskideco2.png" alt="Natsuki Analisis" onerror="this.style.display='none';">
+        </div>
+      </div>
+
+      <div id="sub-pancasila-sdgs" class="ddlc-card">
+        <div class="card-header-tab">Pancasila &amp; SDGs 4</div>
+        <p>
+          <strong>Sila Terkait:</strong> Sila ke-2 (<em>Kemanusiaan yang Adil dan Beradab</em>), Sila ke-4 (<em>Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan</em>), dan Sila ke-5 (<em>Keadilan Sosial bagi Seluruh Rakyat Indonesia</em>).
+        </p>
+        <p>
+          <strong>Nilai &amp; Pentingnya:</strong> Pendidikan berkualitas merupakan hak dasar setiap manusia. Nilai kemanusiaan dan keadilan sosial mendorong pemerataan kesempatan belajar bagi semua tanpa diskriminasi, sementara nilai musyawarah membantu menyusun program pendidikan yang tepat sasaran dan sesuai kebutuhan bersama.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 3. TAB SOLUSI ================= -->
+    <section id="tab-solusi" class="tab-panel">
+      <div class="ddlc-card card-with-natsuki">
+        <div class="card-text-area">
+          <div class="card-header-tab">Solusi</div>
+          <img src="images/sdgs-7.png" alt="Solusi Pendidikan Berkualitas" class="content-inline-img" onerror="this.style.display='none';">
+          <p>
+            Effective solutions combine inclusive digital learning platforms for remote areas, continuous teacher training and support, inclusive policies for students with disabilities and marginalized groups, and safe, well-equipped learning spaces that build both knowledge and character.
+          </p>
+        </div>
+
+        <div class="card-natsuki-side">
+          <img src="images/natuskideco3.png" alt="Natsuki Solusi" onerror="this.style.display='none';">
+        </div>
+      </div>
+
+      <div class="ddlc-card">
+        <div class="card-header-tab">Aksi Nyata Pelajar</div>
+        <p>
+          <strong>Nilai yang Diterapkan:</strong> Kepedulian, tanggung jawab, dan keadilan dalam belajar dan berbagi (Sila ke-2 dan Sila ke-5).
+        </p>
+        <p>
+          <strong>Tindakan &amp; Dampak ke SDGs 4:</strong> Membuat ringkasan materi pelajaran yang mudah dipahami, berbagi catatan dengan teman yang kesulitan, serta aktif dalam kelompok belajar yang inklusif membantu memperluas akses pemahaman belajar yang setara dan mendukung tercapainya SDGs 4.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 4. TAB KERJASAMA ================= -->
+    <section id="tab-kerjasama" class="tab-panel">
+      <div id="sub-bilateral" class="ddlc-card">
+        <div class="card-header-tab">Bilateral</div>
+        <img src="images/sdgs-8.png" alt="Kerjasama Internasional" class="content-inline-img" onerror="this.style.display='none';">
+        <p>
+          Bilateral cooperation between two countries—such as education exchanges, teacher capacity programs, and scholarship initiatives like Australia Awards—helps share effective teaching practices and broaden academic opportunities.
+        </p>
+      </div>
+
+      <div id="sub-regional" class="ddlc-card">
+        <div class="card-header-tab">Regional</div>
+        <p>
+          Regional cooperation within ASEAN—such as education ministerial forums and university networks—supports cross-border learning, academic exchange, and quality alignment across Southeast Asia (connected to SDG 4 and SDG 17).
+        </p>
+      </div>
+
+      <div id="sub-multilateral" class="ddlc-card">
+        <div class="card-header-tab">Multilateral</div>
+        <p>
+          Multilateral cooperation through the UN, UNESCO, and UNICEF under the Education 2030 and SDGs agenda supports global benchmarks, data sharing, literacy and numeracy initiatives, and equitable access for children.
+        </p>
+      </div>
+
+      <div id="sub-internasional" class="ddlc-card card-with-natsuki">
+        <div class="card-text-area">
+          <div class="card-header-tab">Internasional</div>
+          <p>
+            Broader international cooperation—including global academic competitions, cross-continental exchanges, and partnerships with international bodies—helps learners and educators adapt to changing skills and global challenges while advancing SDG 4 and SDG 17.
+          </p>
+        </div>
+
+        <div class="card-natsuki-side">
+          <img src="images/natuskideco4.png" alt="Natsuki Kerjasama" onerror="this.style.display='none';">
+        </div>
+      </div>
+
+      <div id="sub-pancasila-kerjasama" class="ddlc-card">
+        <div class="card-header-tab">Pancasila dalam Kerja Sama Antarnegara</div>
+        <p>
+          <strong>Kemanusiaan &amp; Menghargai Perbedaan:</strong> Kerja sama pendidikan antarnegara—seperti pertukaran pelajar, pelatihan guru, dan beasiswa—menjunjung martabat manusia dan hak belajar yang setara. Perbedaan sistem, bahasa, dan budaya disikapi dengan saling menghormati agar hubungan tetap harmonis.
+        </p>
+        <p>
+          <strong>Musyawarah, Keadilan &amp; Perbedaan Kepentingan:</strong> Musyawarah dan kesepakatan bersama memastikan kerja sama berjalan transparan dan tidak memaksakan kehendak sepihak. Ketika muncul perbedaan kepentingan antarnegara, Indonesia perlu mengutamakan keadilan sosial (Sila ke-5), kemanusiaan (Sila ke-2), dan kebijaksanaan (Sila ke-4) melalui dialog terbuka, pembagian manfaat yang proporsional, serta peningkatan kapasitas bersama.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 5. TAB TENTANG SAYA ================= -->
+    <section id="tab-tentang" class="tab-panel">
+      <div class="ddlc-card card-with-natsuki">
+        <div class="card-text-area">
+          <div class="card-header-tab">Tentang Saya</div>
+          <p><strong>Nama:</strong> Felicia Becanessy Yap</p>
+          <p><strong>Nomor Absen:</strong> 15</p>
+          <p><strong>Kelas:</strong> IX-2</p>
+        </div>
+
+        <div class="card-natsuki-side">
+          <img src="images/natuskideco5.png" alt="Natsuki Tentang Saya" onerror="this.style.display='none';">
+        </div>
+      </div>
+
+      <div class="ddlc-card">
+        <div class="card-header-tab">Refleksi</div>
+        <p>
+          Working on this IPS, PPKn, and TIK collaboration project helped connect SDG 4 quality education to real-world access gaps, social fairness values, and careful web design and coding skills.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 6. TAB DAFTAR PUSTAKA ================= -->
+    <section id="tab-pustaka" class="tab-panel">
+      <div class="ddlc-card">
+        <div class="card-header-tab">Daftar Pustaka</div>
+        <ul class="pustaka-list">
+          <li><a href="https://sdgs.ub.ac.id/inacol-sdgs/17-goals-bappenas/sdgs-4-pendidikan-berkualitas/" target="_blank" rel="noopener noreferrer">https://sdgs.ub.ac.id/inacol-sdgs/17-goals-bappenas/sdgs-4-pendidikan-berkualitas/</a></li>
+          <li><a href="https://unesdoc.unesco.org/ark:/48223/pf0000246300" target="_blank" rel="noopener noreferrer">https://unesdoc.unesco.org/ark:/48223/pf0000246300</a></li>
+          <li><a href="https://globalgoals.org/goals/4-quality-education/" target="_blank" rel="noopener noreferrer">https://globalgoals.org/goals/4-quality-education/</a></li>
+          <li><a href="https://australiaawardsindonesia.org/" target="_blank" rel="noopener noreferrer">https://australiaawardsindonesia.org/</a></li>
+          <li><a href="https://www.unesco.org/en/education/sdg4" target="_blank" rel="noopener noreferrer">https://www.unesco.org/en/education/sdg4</a></li>
+          <li><a href="https://www.unicef.org/indonesia/education" target="_blank" rel="noopener noreferrer">https://www.unicef.org/indonesia/education</a></li>
+        </ul>
+      </div>
+
+      <div class="pustaka-bottom-banner">
+        <img
+          src="images/allmember.png"
+          alt="All Member"
+          data-fallbacks="images/all member.png,images/AllMember.png,allmember.png"
+          onerror="const list = (this.dataset.fallbacks || '').split(',').filter(Boolean); if (list.length) { this.src = list.shift(); this.dataset.fallbacks = list.join(','); } else { this.style.display='none'; }"
+        >
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="ddlc-footer">
+    <p>Web Kolaborasi IPS - PPKn - TIK | SMP Santa Ursula Jakarta</p>
+  </footer>
+
+  <!-- Full Screen Glitch & Layers "Just Monika." -->
+  <div id="monikaFullscreenOverlay" class="monika-fullscreen-overlay" role="dialog" aria-modal="true" aria-label="Just Monika">
+    <img id="monikaGlitchBg" class="monika-glitch-bg" src="" alt="Glitch Sprite">
+    <div id="monikaLayersContainer" class="monika-layers-container"></div>
+  </div>
+
+  <script>
+    // ================= SOUND PLAYER =================
+    let currentAudio = null;
+
+    function stopSound() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+    }
+
+    function playSound(trackName) {
+      if (!trackName) return;
+      stopSound();
+
+      const candidates = [
+        `audio/${trackName}.mp3`,
+        `${trackName}.mp3`,
+        `images/${trackName}.mp3`
+      ];
+
+      let idx = 0;
+      const audio = new Audio();
+      currentAudio = audio;
+
+      const tryNext = () => {
+        if (currentAudio !== audio) return;
+        if (idx >= candidates.length) return;
+        audio.src = candidates[idx++];
+        audio.play().catch(() => {});
+      };
+
+      audio.addEventListener('error', tryNext, { once: false });
+      tryNext();
+    }
+
+    // ================= START SCREEN ENTRANCE & TRANSITION =================
+    const startScreen = document.getElementById('ddlcStartScreen');
+    const startModal = document.getElementById('ddlcStartModal');
+    const startModalText = document.getElementById('ddlcStartModalText');
+
+    function showMainMenu() {
+      if (!startScreen) return;
+      startScreen.classList.remove('starting');
+      startScreen.classList.remove('hidden');
+      document.body.classList.add('start-locked');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      requestAnimationFrame(() => {
+        startScreen.classList.add('entered');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      requestAnimationFrame(() => {
+        if (startScreen) {
+          startScreen.classList.add('entered');
+        }
+      });
+    });
+
+    function startGameTransition(targetTab = 'tab-beranda') {
+      if (!startScreen) return;
+      startScreen.classList.add('starting');
+      setTimeout(() => {
+        startScreen.classList.add('hidden');
+        document.body.classList.remove('start-locked');
+        openTab(targetTab);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 480);
+    }
+
+    document.getElementById('btnNewGame')?.addEventListener('click', () => {
+      startGameTransition('tab-beranda');
+    });
+
+    document.getElementById('btnLoadGame')?.addEventListener('click', () => {
+      startGameTransition('tab-analisis');
+    });
+
+    document.getElementById('btnSettingsStart')?.addEventListener('click', () => {
+      if (startModalText && startModal) {
+        startModalText.textContent = 'Proyek Web Kolaborasi IPS • PPKn • TIK — SDG 4: Pendidikan Berkualitas.';
+        startModal.classList.add('open');
+      }
+    });
+
+    document.getElementById('btnHelpStart')?.addEventListener('click', () => {
+      if (startModalText && startModal) {
+        startModalText.textContent = 'Klik "New Game" untuk memulai atau "Load Game" untuk langsung ke Analisis!';
+        startModal.classList.add('open');
+      }
+    });
+
+    document.getElementById('btnCloseStartModal')?.addEventListener('click', () => {
+      startModal?.classList.remove('open');
+    });
+
+    // ================= BANNER COLORFUL LETTERS =================
+    const titleEl = document.getElementById('ddlc-logo-title');
+    if (titleEl) {
+      const colors = ['#f47c7c', '#ff9ec7', '#9be59b', '#8cd4f5', '#c58af9'];
+      const tilts = ['-4deg', '3deg', '-3deg', '4deg', '-2deg'];
+      const rawText = titleEl.textContent.trim();
+      const parts = rawText.split(',');
+      const lines = parts.length > 1
+        ? [parts[0] + ',', parts.slice(1).join(',').trim()]
+        : [rawText];
+
+      let colorIndex = 0;
+      titleEl.innerHTML = lines.map(line => {
+        const lettersHtml = line.split('').map(char => {
+          if (char === ' ') return ' ';
+          const color = colors[colorIndex % colors.length];
+          const tilt = tilts[colorIndex % tilts.length];
+          colorIndex++;
+          return `<span class="ddlc-letter" style="color: ${color}; --tilt: ${tilt};">${char}</span>`;
+        }).join('');
+        return `<span class="ddlc-title-line">${lettersHtml}</span>`;
+      }).join('');
+    }
+
+    // ================= TAB NAVIGATION =================
+    const tabButtons = document.querySelectorAll('.navbar .ddlc-btn');
+    const dropdownLinks = document.querySelectorAll('.dropdown-link');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    function openTab(tabId, targetId = null) {
+      tabPanels.forEach(panel => {
+        panel.classList.toggle('active', panel.id === tabId);
+      });
+
+      tabButtons.forEach(btn => {
+        btn.classList.toggle('active-tab', btn.dataset.tab === tabId);
+      });
+
+      if (targetId) {
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else {
+        const navEl = document.querySelector('.navbar');
+        if (navEl) {
+          navEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.tab) {
+          openTab(btn.dataset.tab);
+        }
+      });
+    });
+
+    dropdownLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        openTab(link.dataset.tab, link.dataset.target);
+      });
+    });
+
+    // ================= GLITCH & "JUST MONIKA." EASTER EGG + QUIT FLOW =================
+    const characterImages = document.querySelectorAll('img.ddlc-click-img[data-glitch]');
+    const overlay = document.getElementById('monikaFullscreenOverlay');
+    const glitchBg = document.getElementById('monikaGlitchBg');
+    const layersContainer = document.getElementById('monikaLayersContainer');
+
+    let isSequenceActive = false;
+    let goHomeTimer = null;
+
+    function setGifWithFallback(imgEl, primarySrc, fallbackSrc) {
+      imgEl.onerror = () => {
+        imgEl.onerror = () => {
+          imgEl.style.display = 'none';
+        };
+        imgEl.src = fallbackSrc;
+      };
+      imgEl.style.display = 'block';
+      imgEl.src = primarySrc;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (isSequenceActive && e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    function createStackedBox(layerIndex, totalLayers, onLastOk) {
+      const box = document.createElement('div');
+      box.className = 'monika-layer-box';
+      box.style.zIndex = String(10 + layerIndex);
+
+      const offsetX = (layerIndex - (totalLayers - 1) / 2) * 28 + (Math.random() * 50 - 25);
+      const offsetY = (layerIndex - (totalLayers - 1) / 2) * 22 + (Math.random() * 40 - 20);
+
+      box.style.left = `calc(50% + ${offsetX}px)`;
+      box.style.top = `calc(50% + ${offsetY}px)`;
+      box.style.transform = 'translate(-50%, -50%)';
+
+      const title = document.createElement('div');
+      title.className = 'monika-layer-title';
+      title.textContent = 'Just Monika.';
+
+      const okBtn = document.createElement('button');
+      okBtn.type = 'button';
+      okBtn.className = 'monika-layer-ok';
+      okBtn.textContent = 'OK';
+
+      okBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        box.remove();
+
+        if (layersContainer.children.length === 0) {
+          onLastOk();
+        }
+      });
+
+      box.appendChild(title);
+      box.appendChild(okBtn);
+      return box;
+    }
+
+    function showYuriChoiceStage() {
+      layersContainer.innerHTML = '';
+
+      const stack = document.createElement('div');
+      stack.className = 'yuri-choice-stack';
+
+      const handleChoice = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        layersContainer.innerHTML = '';
+        playSound('yuriglitch');
+        setGifWithFallback(glitchBg, 'images/yurist.gif', 'yurist.gif');
+
+        clearTimeout(goHomeTimer);
+        goHomeTimer = setTimeout(() => {
+          stopSound();
+          isSequenceActive = false;
+          overlay.classList.remove('active');
+          glitchBg.removeAttribute('src');
+          openTab('tab-beranda');
+        }, 3500);
+      };
+
+      const yesBtn = document.createElement('button');
+      yesBtn.type = 'button';
+      yesBtn.className = 'yuri-choice-btn';
+      yesBtn.textContent = 'Yes.';
+      yesBtn.addEventListener('click', handleChoice);
+
+      const noBtn = document.createElement('button');
+      noBtn.type = 'button';
+      noBtn.className = 'yuri-choice-btn';
+      noBtn.textContent = 'No.';
+      noBtn.addEventListener('click', handleChoice);
+
+      stack.appendChild(yesBtn);
+      stack.appendChild(noBtn);
+      layersContainer.appendChild(stack);
+    }
+
+    function showQuitGlitchOkStage() {
+      playSound('monikaglitch3');
+      setGifWithFallback(glitchBg, 'images/monikaquitglitch.gif', 'monikaquitglitch.gif');
+      layersContainer.innerHTML = '';
+
+      const box = document.createElement('div');
+      box.className = 'monika-layer-box ok-only-box';
+      box.style.zIndex = '20';
+
+      const okBtn = document.createElement('button');
+      okBtn.type = 'button';
+      okBtn.className = 'monika-layer-ok';
+      okBtn.textContent = 'OK';
+
+      okBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        stopSound();
+        isSequenceActive = false;
+        overlay.classList.remove('active');
+        glitchBg.removeAttribute('src');
+        layersContainer.innerHTML = '';
+        showMainMenu();
+      });
+
+      box.appendChild(okBtn);
+      layersContainer.appendChild(box);
+    }
+
+    document.getElementById('btnQuitStart')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      clearTimeout(goHomeTimer);
+      isSequenceActive = true;
+      playSound('monikaglitch2');
+      setGifWithFallback(glitchBg, 'images/monikaglitch.gif', 'monikaglitch.gif');
+      layersContainer.innerHTML = '';
+
+      const layerCount = Math.floor(Math.random() * 4) + 3;
+      for (let i = 0; i < layerCount; i++) {
+        layersContainer.appendChild(createStackedBox(i, layerCount, showQuitGlitchOkStage));
+      }
+
+      overlay.classList.add('active');
+    });
+
+    characterImages.forEach((img) => {
+      img.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        clearTimeout(goHomeTimer);
+
+        const isYuri = img.getAttribute('data-char') === 'yuri';
+        const glitchSrc = img.getAttribute('data-glitch');
+        const soundName = img.getAttribute('data-sound');
+        if (!glitchSrc) return;
+
+        isSequenceActive = true;
+        playSound(soundName);
+        setGifWithFallback(glitchBg, glitchSrc, glitchSrc.replace(/^images\//, ''));
+        layersContainer.innerHTML = '';
+
+        const onAllOkClicked = isYuri
+          ? showYuriChoiceStage
+          : () => {
+              stopSound();
+              isSequenceActive = false;
+              overlay.classList.remove('active');
+              glitchBg.removeAttribute('src');
+
+              goHomeTimer = setTimeout(() => {
+                openTab('tab-beranda');
+              }, 2000);
+            };
+
+        const layerCount = Math.floor(Math.random() * 4) + 2;
+        for (let i = 0; i < layerCount; i++) {
+          layersContainer.appendChild(createStackedBox(i, layerCount, onAllOkClicked));
+        }
+
+        overlay.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

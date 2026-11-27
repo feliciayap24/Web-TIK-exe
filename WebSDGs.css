@@ -1,0 +1,422 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Patrick+Hand&family=Quicksand:wght@600;700&family=Titan+One&display=swap');
+
+:root {
+  --ddlc-pink-main: #ff7eb9;
+  --ddlc-pink-dark: #d94a8c;
+  --ddlc-pink-light: #ffe6f2;
+  --ddlc-pink-soft: #fff0f7;
+  --ddlc-white: #ffffff;
+  --ddlc-text: #4a3b42;
+
+  /* Gaya bar pilihan DDLC */
+  --choice-bg: #fce4f0;
+  --choice-hover: #fbd0e6;
+  --choice-active: #f7b8d8;
+  --choice-border: #f7b8d8;
+  --choice-ink: #111111;
+  --button-font: 'Patrick Hand', cursive;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Signature DDLC Polka-Dot Background */
+body {
+  font-family: 'Patrick Hand', 'Nunito', sans-serif;
+  color: var(--ddlc-text);
+  background-color: var(--ddlc-pink-soft);
+  background-image:
+    radial-gradient(#ffcce6 22%, transparent 23%),
+    radial-gradient(#ffcce6 22%, transparent 23%);
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+  line-height: 1.6;
+  font-size: 1.15rem;
+}
+
+/* ================= BANNER HEADER (CLASSROOM + SPRITES) ================= */
+.ddlc-banner {
+  position: relative;
+  width: 100%;
+  min-height: 295px;
+  background-color: #ffd1e8;
+  background-image: url('images/Club.webp'), linear-gradient(135deg, #ffd1e8 0%, #fff5fa 50%, #ffc2e0 100%);
+  background-size: cover;
+  background-position: center;
+  border-bottom: 5px solid var(--ddlc-pink-main);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 20px 24px 0;
+  overflow: hidden;
+}
+
+.ddlc-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 224, 240, 0.35),
+    rgba(255, 194, 224, 0.52)
+  );
+  z-index: 1;
+}
+
+.banner-sprites {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 270px;
+}
+
+.sprite-box {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.sprite-char {
+  width: auto;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 4px 6px rgba(74, 59, 66, 0.28));
+  transition: transform 0.2s ease;
+}
+
+.sprite-char:hover {
+  transform: translateY(-6px);
+}
+
+.sprite-sayori { height: 248px; }
+.sprite-yuri   { height: 270px; }
+.sprite-monika { height: 266px; }
+.sprite-natsuki{ height: 235px; }
+
+.sprite-fallback {
+  display: none;
+  align-self: center;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ddlc-pink-dark);
+  border: 2px dashed var(--ddlc-pink-main);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-family: var(--button-font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 45px;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  text-align: center;
+  max-width: 620px;
+  padding-bottom: 18px;
+}
+
+.banner-tag {
+  display: inline-block;
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--ddlc-pink-main);
+  color: white;
+  font-weight: 800;
+  font-size: 0.88rem;
+  padding: 4px 16px;
+  border-radius: 20px;
+  border: 2px solid white;
+  box-shadow: 0 3px 0 var(--ddlc-pink-dark);
+  margin-bottom: 10px;
+}
+
+/* DDLC Logo-Inspired Multicolor Main Title */
+.banner-title {
+  font-family: 'Titan One', 'Quicksand', sans-serif;
+  font-size: 2.35rem;
+  font-weight: 400;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.ddlc-letter {
+  display: inline-block;
+  transform: rotate(var(--tilt, 0deg));
+  -webkit-text-stroke: 2px #ffffff;
+  paint-order: stroke fill;
+  text-shadow:
+    3px 4px 0px rgba(74, 59, 66, 0.25),
+    0px 2px 6px rgba(217, 74, 140, 0.35);
+  transition: transform 0.15s ease;
+}
+
+.ddlc-letter:hover {
+  transform: scale(1.15) rotate(0deg);
+}
+
+/* Subtitle */
+.banner-subtitle {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.2rem;
+  color: var(--ddlc-pink-dark);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ddlc-pink-main);
+  box-shadow: 3px 3px 0px rgba(217, 74, 140, 0.25);
+  transform: rotate(1deg);
+  display: inline-block;
+}
+
+/* ================= STICKY NAVIGATION BAR & BUTTONS ================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #ffb3d9;
+  border-bottom: 4px solid var(--ddlc-pink-dark);
+  padding: 12px 15px;
+  box-shadow: 0 4px 10px rgba(217, 74, 140, 0.2);
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.nav-item {
+  position: relative;
+}
+
+/* Semua tombol utama yang bisa diklik (gaya bar pilihan DDLC) */
+.ddlc-btn,
+.cta-btn {
+  display: inline-block;
+  font-family: var(--button-font);
+  font-weight: 400;
+  font-size: 1.15rem;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  color: var(--choice-ink);
+  background-color: var(--choice-bg);
+  padding: 7px 22px;
+  border-radius: 0px;
+  border: 2px solid var(--choice-border);
+  box-shadow: 0 2px 6px rgba(217, 74, 140, 0.14);
+  transition: background-color 0.15s ease, transform 0.12s ease;
+  cursor: pointer;
+}
+
+.ddlc-btn:hover,
+.cta-btn:hover {
+  background-color: var(--choice-hover);
+  transform: translateY(-1px);
+}
+
+.ddlc-btn.active-tab {
+  background-color: #ffffff;
+  border-color: var(--ddlc-pink-dark);
+  box-shadow: 0 3px 0 var(--ddlc-pink-dark);
+}
+
+.ddlc-btn:active,
+.cta-btn:active {
+  transform: translateY(1px);
+}
+
+/* Dropdown Sub-Menu */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  background-color: #ffffff;
+  border: 2px solid var(--choice-border);
+  border-radius: 0px;
+  padding: 8px;
+  list-style: none;
+  box-shadow: 0 8px 16px rgba(217, 74, 140, 0.2);
+  z-index: 1001;
+}
+
+.nav-item:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu li {
+  margin-bottom: 6px;
+}
+
+.dropdown-menu li:last-child {
+  margin-bottom: 0;
+}
+
+.dropdown-link {
+  width: 100%;
+  display: block;
+  padding: 7px 14px;
+  text-align: center;
+  font-family: var(--button-font);
+  font-weight: 400;
+  font-size: 1.08rem;
+  color: var(--choice-ink);
+  background-color: var(--choice-bg);
+  border: 2px solid var(--choice-border);
+  border-radius: 0px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-link:hover {
+  background-color: var(--choice-hover);
+}
+
+/* ================= SECTIONS & CARDS (TAB SWITCHER) ================= */
+.container {
+  max-width: 1100px;
+  margin: 28px auto;
+  padding: 0 20px;
+  min-height: 360px;
+}
+
+.tab-panel {
+  display: none;
+  scroll-margin-top: 85px;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.ddlc-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 4px solid var(--ddlc-pink-main);
+  border-radius: 22px;
+  padding: 24px;
+  margin-bottom: 25px;
+  box-shadow: 6px 6px 0px #ffc2e0;
+  scroll-margin-top: 85px;
+}
+
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 25px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .banner-sprites {
+    display: none;
+  }
+  .ddlc-banner {
+    justify-content: center;
+    align-items: center;
+    min-height: 220px;
+    padding: 24px 18px;
+  }
+  .banner-content {
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-2-col {
+    grid-template-columns: 1fr;
+  }
+  .banner-title {
+    font-size: 1.95rem;
+  }
+}
+
+/* Card Header Tab */
+.card-header-tab {
+  display: inline-block;
+  font-family: 'Quicksand', 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 1.22rem;
+  color: white;
+  background-color: var(--ddlc-pink-main);
+  padding: 6px 22px;
+  border-radius: 16px;
+  border: 3px solid var(--ddlc-pink-dark);
+  margin-bottom: 16px;
+  box-shadow: 3px 3px 0px #ffc2e0;
+}
+
+/* Body "Isian" (Natsuki handwriting font) */
+.ddlc-card p {
+  font-family: 'Patrick Hand', cursive;
+  margin-bottom: 14px;
+  font-size: 1.25rem;
+}
+
+.image-frame {
+  width: 100%;
+  min-height: 220px;
+  background-color: var(--ddlc-pink-soft);
+  border: 3px dashed var(--ddlc-pink-dark);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  margin-bottom: 15px;
+  color: var(--ddlc-pink-dark);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+
+.image-frame img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 12px;
+}
+
+.img-placeholder-text p {
+  margin-bottom: 6px;
+}
+
+.cta-btn {
+  margin-top: 8px;
+}
+
+.pustaka-list {
+  font-family: 'Patrick Hand', cursive;
+  margin-left: 22px;
+  font-size: 1.2rem;
+}
+
+.pustaka-list li {
+  margin-bottom: 8px;
+}
+
+/* ================= FOOTER ================= */
+.ddlc-footer {
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+  padding: 20px;
+  background-color: #ffb3d9;
+  border-top: 4px solid var(--ddlc-pink-dark);
+  color: var(--ddlc-pink-dark);
+  font-weight: 700;
+  margin-top: 40px;
+}
